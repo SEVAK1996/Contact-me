@@ -1,48 +1,31 @@
 import requests
-import time
-
-def get_btc_eth_price_changes():
-    url = "https://api.coingecko.com/api/v3/simple/price"
-    params = {
-        "ids": "bitcoin,ethereum",
-        "vs_currencies": "usd",
-        "include_24hr_change": "true"
-    }
-
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
-
-        btc_change = data["bitcoin"]["usd_24h_change"]
-        eth_change = data["ethereum"]["usd_24h_change"]
-
-        return btc_change, eth_change
-
-    except Exception as e:
-        print(f"Error fetching CoinGecko data: {e}")
-        return None, None
-
-# Օրինակ օգտագործում
-if __name__ == "__main__":
-    while True:
-        def check_and_trade():
-    print("▶️ CoinGecko Scanner launched")
-    # այստեղ մնացած կոդը...
-        btc, eth = get_btc_eth_price_changes()
-        if btc is not None:
-            print(f"BTC 24h change: {btc:.2f}%")
-            print(f"ETH 24h change: {eth:.2f}%")
-
-            if abs(btc) > 5:
-                print("Smart Signal: BTC spike detected!")
-
-            if abs(eth) > 5:
-                print("Smart Signal: ETH spike detected!")
-        
-        time.sleep(60)
-from binance_executor import open_long_position
+import os
+from binance.client import Client
 
 def check_and_trade():
-    print("Running test trade...")
-    # Փորձնական trade՝ BTCUSDT, 3 USDT, x3 լևերեջ
-    open_long_position(symbol="BTCUSDT", usdt_amount=3, leverage=3)
+    print("▶️ Running Scanner...")
+
+    # CoinGecko BTC գին
+    url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+    r = requests.get(url)
+    price = r.json()["bitcoin"]["usd"]
+
+    print(f"BTC Price: ${price}")
+
+    # Binance Auth
+    api_key = os.getenv("BINANCE_API_KEY")
+    api_secret = os.getenv("BINANCE_SECRET_KEY")
+    client = Client(api_key, api_secret)
+
+    # Պայմաններ
+    symbol = "BTCUSDT"
+    qty = 0.001  # փոխի ըստ քո գումարի
+
+    if price > 70000:
+        client.futures_create_order(symbol=symbol, side="BUY", type="MARKET", quantity=qty)
+        print("Opened LONG BTC")
+    elif price < 60000:
+        client.futures_create_order(symbol=symbol, side="SELL", type="MARKET", quantity=qty)
+        print("Opened SHORT BTC")
+    else:
+        print("No trade signal")
