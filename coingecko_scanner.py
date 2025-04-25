@@ -25,6 +25,9 @@ def get_btc_eth_price_changes():
 # Օրինակ օգտագործում
 if __name__ == "__main__":
     while True:
+        def check_and_trade():
+    print("▶️ CoinGecko Scanner launched")
+    # այստեղ մնացած կոդը...
         btc, eth = get_btc_eth_price_changes()
         if btc is not None:
             print(f"BTC 24h change: {btc:.2f}%")
