@@ -24,3 +24,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+from coingecko_scanner import check_and_trade
+check_and_trade()
+Added Coingecko scanner call
