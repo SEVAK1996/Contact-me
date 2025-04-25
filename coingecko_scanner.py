@@ -40,3 +40,9 @@ if __name__ == "__main__":
                 print("Smart Signal: ETH spike detected!")
         
         time.sleep(60)
+from binance_executor import open_long_position
+
+def check_and_trade():
+    print("Running test trade...")
+    # Փորձնական trade՝ BTCUSDT, 3 USDT, x3 լևերեջ
+    open_long_position(symbol="BTCUSDT", usdt_amount=3, leverage=3)
