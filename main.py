@@ -21,8 +21,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("status", status))
     app.run_polling()
+from coingecko_scanner import check_and_trade
 
 if __name__ == "__main__":
-    main()
-from coingecko_scanner import check_and_trade
-check_and_trade()
+    check_and_trade()
